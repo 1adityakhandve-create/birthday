@@ -857,7 +857,7 @@
                 </div>
             </div>
             <div class="memory-card">
-                <img src="https://i.ibb.co/LzXdps6R/13.jpghttps://i.ibb.co/LzXdps6R/13.jpg"
+                <img src="https://i.ibb.co/LzXdps6R/13.jpg"
                     alt="Memory" class="memory-image" loading="eager">
                 <div class="memory-hover-overlay">
                     <p class="hover-message">You make my world beautiful ❤️</p>
@@ -976,7 +976,7 @@
             </div>
             <div class="memory-card">
                 <img src="https://i.ibb.co/mCB4mdWb/newimg07.png"
-                    alt="Memory" class="memory-image loading="eager">
+                    alt="Memory" class="memory-image" loading="eager">
                 <div class="memory-hover-overlay">
                     <p class="hover-message">To many more adventures together 🥂</p>
                 </div>
@@ -1035,25 +1035,25 @@
         </div>
     </section>
 
-    <audio id="hero-section" preload="auto">
+    <audio id="hero-section" preload="metadata">
         <source src="audio/Entry.mp3" type="audio/mpeg">
     </audio>
-    <audio id="slider-section" preload="auto">
+    <audio id="slider-section" preload="metadata">
         <source src="audio/Getting-Ready.mp3" type="audio/mpeg">
     </audio>
-    <audio id="cake-section" preload="auto">
+    <audio id="cake-section" preload="metadata">
         <source src="audio/Cake-Cutting.mp3" type="audio/mpeg">
     </audio>
-    <audio id="memory-1" preload="auto">
+    <audio id="memory-1" preload="metadata">
         <source src="audio/Old-Photos.mp3" type="audio/mpeg">
     </audio>
-    <audio id="memory-2" preload="auto">
+    <audio id="memory-2" preload="metadata">
         <source src="audio/New-Photos.mp3" type="audio/mpeg">
     </audio>
-    <audio id="personal-message-section" preload="auto">
+    <audio id="personal-message-section" preload="metadata">
         <source src="audio/Note.mp3" type="audio/mpeg">
     </audio>
-    <audio id="wish-section" preload="auto">
+    <audio id="wish-section" preload="metadata">
         <source src="audio/Wish.mp3" type="audio/mpeg">
     </audio>
 
@@ -1253,6 +1253,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             initFairyLights();
         });
+
+        document.querySelectorAll('audio').forEach(a => {
+        a.load();
+    });
         
 // PRELOAD IMAGES
 const images = [
@@ -1298,22 +1302,7 @@ images.forEach(src => {
   img.src = src;
 });
 
-// PRELOAD AUDIO
-const audios = [
-    "audio/Entry.mp3",
-    "audio/Wish.mp3",
-    "audio/Cake-Cutting.mp3",
-    "audio/New-Photos.mp3",
-    "audio/Old-Photos.mp3",
-    "audio/Getting-Ready.mp3",
-    "audio/Note.mp3",
-];
 
-audios.forEach(src => {
-  const audio = new Audio();
-  audio.src = src;
-  audio.preload = "auto";
-});
     </script>
 
 </body>
