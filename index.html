@@ -1058,44 +1058,89 @@
     </audio>
 
     <script>
-        let currentMusic = null;
+            // ============ AUDIO ENGINE ============
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const audioBuffers = {};
+    let currentSource = null;
+    let currentGain = null;
+    let audioUnlocked = false;
 
-        function playLoop(id) {
+    const audioFiles = {
+        'hero-section': 'audio/Entry.mp3',
+        'slider-section': 'audio/Getting-Ready.mp3',
+        'cake-section': 'audio/Cake-Cutting.mp3',
+        'memory-1': 'audio/Old-Photos.mp3',
+        'memory-2': 'audio/New-Photos.mp3',
+        'personal-message-section': 'audio/Note.mp3',
+        'wish-section': 'audio/Wish.mp3'
+    };
 
-    if (currentMusic) {
-        currentMusic.pause();
-        currentMusic.currentTime = 0;
-    }
-
-    const music = document.getElementById(id);
-
-    if (!music) return;
-
-    music.loop = true;
-
-    // ensure loaded before play
-    music.currentTime = 0;
-
-    const playPromise = music.play();
-
-    if (playPromise !== undefined) {
-        playPromise.catch(err => {
-            console.log("Audio blocked:", err);
+    async function preloadAllAudio() {
+        const promises = Object.entries(audioFiles).map(async ([key, src]) => {
+            try {
+                const response = await fetch(src);
+                const arrayBuffer = await response.arrayBuffer();
+                audioBuffers[key] = await audioContext.decodeAudioData(arrayBuffer);
+                console.log(`✅ Ready: ${key}`);
+            } catch(e) {
+                console.error(`❌ Failed to load: ${key}`, e);
+            }
         });
+        await Promise.all(promises);
     }
 
-    currentMusic = music;
-}
+    function unlockAndPreload() {
+        if (audioUnlocked) return;
+        audioUnlocked = true;
+        audioContext.resume().then(() => {
+            console.log('AudioContext resumed');
+        });
+        preloadAllAudio();
+    }
 
-        function openHero() {
-            document.getElementById('hero-open-btn').style.display = 'none';
-            playLoop('hero-section');
-            document.getElementById('hero-stage').classList.add('open');
-            setTimeout(() => {
-                document.getElementById('hero-content').style.opacity = '1';
-            }, 2500);
+    function playLoop(id) {
+        const tryPlay = () => {
+            if (!audioBuffers[id]) {
+                setTimeout(tryPlay, 100);
+                return;
+            }
+            const oldSource = currentSource;
+            const oldGain = currentGain;
+            if (oldGain) {
+                oldGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.3);
+                setTimeout(() => {
+                    try { oldSource.stop(); } catch(e) {}
+                }, 1000);
+            }
+            const source = audioContext.createBufferSource();
+            const gain = audioContext.createGain();
+            source.buffer = audioBuffers[id];
+            source.loop = true;
+            gain.gain.setValueAtTime(0, audioContext.currentTime);
+            gain.gain.setTargetAtTime(1, audioContext.currentTime, 0.5);
+            source.connect(gain);
+            gain.connect(audioContext.destination);
+            source.start();
+            currentSource = source;
+            currentGain = gain;
+        };
+        audioContext.resume().then(tryPlay);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            audioContext.resume();
         }
-
+    });
+            function openHero() {
+        unlockAndPreload();
+        document.getElementById('hero-open-btn').style.display = 'none';
+        document.getElementById('hero-stage').classList.add('open');
+        setTimeout(() => {
+            document.getElementById('hero-content').style.opacity = '1';
+            playLoop('hero-section');
+        }, 2500);
+    }
         function transitionTo(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
