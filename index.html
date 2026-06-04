@@ -999,9 +999,18 @@ font-family:monospace;
                         style="font-family: 'Dancing Script'; font-size: clamp(2rem, 5vw, 3.5rem); color: var(--accent); margin-bottom: 20px;">
                         My Dearest Didi ,</h2>
                     <p style="font-size: clamp(1rem, 2vw, 1.2rem); line-height: 1.8; color: rgba(255,255,255,0.8);">
-                        Today isn't just a date on the calendar; it's a celebration of the light you bring into my life.
-                        Every moment with you is like a frame from a beautiful movie, and I'm so lucky to be your
-                        co-star. May this year be filled with as much magic as you give to everyone around you.
+                        Today isn’t just about marking another year — it’s about you and the kind of person you are.
+                        <br><br>
+                        You have this way of making things feel lighter, calmer, and more certain without even trying. I
+                        don’t think I say this enough, but having you around has always meant more than I can easily put
+                        into words. There’s a quiet strength in you, and a warmth that stays with people long after
+                        moments pass.
+                        <br><br>
+                        I’m genuinely grateful for you — not just today, but every day.
+                        <br><br>
+                        I hope this year gives you the same kind of steadiness, happiness, and comfort that you bring
+                        into others’ lives, including mine.
+
                     </p>
                     <button class="btn-neon" style="margin-top: 40px; animation: none;"
                         onclick="transitionTo('WISH')">MAKE WISH 🌠</button>
@@ -1047,40 +1056,40 @@ font-family:monospace;
     <script>
         document.body.classList.add('loading');
         async function loadEverything() {
-    const text = document.getElementById('loading-text');
-    const percent = document.getElementById('loading-percent');
+            const text = document.getElementById('loading-text');
+            const percent = document.getElementById('loading-percent');
 
-    let progress = 0;
+            let progress = 0;
 
-    function update(p) {
-        progress = Math.min(100, Math.floor(p * 100));
-        percent.textContent = progress + "%";
-    }
+            function update(p) {
+                progress = Math.min(100, Math.floor(p * 100));
+                percent.textContent = progress + "%";
+            }
 
-    text.textContent = "Loading Images...";
-    await preloadImagesWithDecode(images, (p) => update(p * 0.5));
+            text.textContent = "Loading Images...";
+            await preloadImagesWithDecode(images, (p) => update(p * 0.5));
 
-    text.textContent = "Fetching Audio...";
-    await fetchAudioFiles((p) => update(50 + p * 0.3));
+            text.textContent = "Fetching Audio...";
+            await fetchAudioFiles((p) => update(50 + p * 0.3));
 
-    // FAKE DRAMA DELAY
-    text.textContent = "Finalizing Experience...";
-    await new Promise(r => setTimeout(r, 1500));
+            // FAKE DRAMA DELAY
+            text.textContent = "Finalizing Experience...";
+            await new Promise(r => setTimeout(r, 1500));
 
-    text.textContent = "Almost There...";
-    await new Promise(r => setTimeout(r, 1200));
+            text.textContent = "Almost There...";
+            await new Promise(r => setTimeout(r, 1200));
 
-    percent.textContent = "100%";
+            percent.textContent = "100%";
 
-    await new Promise(r => setTimeout(r, 800));
+            await new Promise(r => setTimeout(r, 800));
 
-    document.getElementById('loading-screen').style.opacity = "0";
+            document.getElementById('loading-screen').style.opacity = "0";
 
-    setTimeout(() => {
-        document.getElementById('loading-screen').remove();
-        document.body.classList.remove('loading');
-    }, 800);
-}
+            setTimeout(() => {
+                document.getElementById('loading-screen').remove();
+                document.body.classList.remove('loading');
+            }, 800);
+        }
         // ============ AUDIO ENGINE ============
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const audioBuffers = {};
@@ -1099,40 +1108,40 @@ font-family:monospace;
         };
 
         async function fetchAudioFiles(onProgress) {
-    let loaded = 0;
-    const entries = Object.entries(audioFiles);
+            let loaded = 0;
+            const entries = Object.entries(audioFiles);
 
-    await Promise.all(entries.map(async ([key, src]) => {
-        try {
-            const res = await fetch(src);
-            audioBuffers[key] = await res.arrayBuffer(); // store RAW
-        } catch (e) {}
+            await Promise.all(entries.map(async ([key, src]) => {
+                try {
+                    const res = await fetch(src);
+                    audioBuffers[key] = await res.arrayBuffer(); // store RAW
+                } catch (e) { }
 
-        loaded++;
-        onProgress(loaded / entries.length);
-    }));
-}
+                loaded++;
+                onProgress(loaded / entries.length);
+            }));
+        }
 
         async function decodeAllAudio() {
-    await audioContext.resume();
+            await audioContext.resume();
 
-    const entries = Object.entries(audioBuffers);
+            const entries = Object.entries(audioBuffers);
 
-    for (let [key, buffer] of entries) {
-        if (buffer instanceof ArrayBuffer) {
-            await new Promise((resolve) => {
-                audioContext.decodeAudioData(
-                    buffer,
-                    (decoded) => {
-                        audioBuffers[key] = decoded;
-                        resolve();
-                    },
-                    () => resolve()
-                );
-            });
+            for (let [key, buffer] of entries) {
+                if (buffer instanceof ArrayBuffer) {
+                    await new Promise((resolve) => {
+                        audioContext.decodeAudioData(
+                            buffer,
+                            (decoded) => {
+                                audioBuffers[key] = decoded;
+                                resolve();
+                            },
+                            () => resolve()
+                        );
+                    });
+                }
+            }
         }
-    }
-}
 
         function unlockAndPreload() {
             if (audioUnlocked) return;
@@ -1188,16 +1197,16 @@ font-family:monospace;
         });
 
         async function openHero() {
-    await decodeAllAudio(); // 🔥 decode ONLY after click
+            await decodeAllAudio(); // 🔥 decode ONLY after click
 
-    document.getElementById('hero-open-btn').style.display = 'none';
-    document.getElementById('hero-stage').classList.add('open');
+            document.getElementById('hero-open-btn').style.display = 'none';
+            document.getElementById('hero-stage').classList.add('open');
 
-    setTimeout(() => {
-        document.getElementById('hero-content').style.opacity = '1';
-        playLoop('hero-section');
-    }, 2500);
-}
+            setTimeout(() => {
+                document.getElementById('hero-content').style.opacity = '1';
+                playLoop('hero-section');
+            }, 2500);
+        }
 
         function transitionTo(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1377,31 +1386,31 @@ font-family:monospace;
         });
 
         function preloadImagesWithDecode(srcs, onProgress) {
-    let loaded = 0;
+            let loaded = 0;
 
-    return Promise.all(srcs.map(src => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.src = src;
+            return Promise.all(srcs.map(src => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.src = src;
 
-            img.onload = async () => {
-                try {
-                    await img.decode(); // ensures real decode
-                } catch (e) {}
+                    img.onload = async () => {
+                        try {
+                            await img.decode(); // ensures real decode
+                        } catch (e) { }
 
-                loaded++;
-                onProgress(loaded / srcs.length);
-                resolve();
-            };
+                        loaded++;
+                        onProgress(loaded / srcs.length);
+                        resolve();
+                    };
 
-            img.onerror = () => {
-                loaded++;
-                onProgress(loaded / srcs.length);
-                resolve(); // NEVER block
-            };
-        });
-    }));
-}
+                    img.onerror = () => {
+                        loaded++;
+                        onProgress(loaded / srcs.length);
+                        resolve(); // NEVER block
+                    };
+                });
+            }));
+        }
 
         // PRELOAD IMAGES
         const images = [
