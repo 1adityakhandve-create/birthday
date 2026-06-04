@@ -1061,17 +1061,31 @@
         let currentMusic = null;
 
         function playLoop(id) {
-            if (currentMusic) {
-                currentMusic.pause();
-                currentMusic.currentTime = 0;
-            }
-            const music = document.getElementById(id);
-            if (music) {
-                music.loop = true;
-                music.play().catch(() => { });
-                currentMusic = music;
-            }
-        }
+
+    if (currentMusic) {
+        currentMusic.pause();
+        currentMusic.currentTime = 0;
+    }
+
+    const music = document.getElementById(id);
+
+    if (!music) return;
+
+    music.loop = true;
+
+    // ensure loaded before play
+    music.currentTime = 0;
+
+    const playPromise = music.play();
+
+    if (playPromise !== undefined) {
+        playPromise.catch(err => {
+            console.log("Audio blocked:", err);
+        });
+    }
+
+    currentMusic = music;
+}
 
         function openHero() {
             document.getElementById('hero-open-btn').style.display = 'none';
@@ -1254,8 +1268,8 @@
             initFairyLights();
         });
 
-        document.querySelectorAll('audio').forEach(a => {
-        a.load();
+        document.querySelectorAll('audio').forEach(audio => {
+        audio.load();
     });
         
 // PRELOAD IMAGES
